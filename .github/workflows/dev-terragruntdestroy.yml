@@ -15,7 +15,10 @@ jobs:
         defaults:
             run:
                 working-directory: "./terraform/"
-        environment: dev
+        env:
+          AWS_REGION: "eu-west-1"
+          CLUSTER_NAME: "juned-cluster"
+          ENVIRONMENT: "dev"
     
         steps:
             - name: Checkout
@@ -36,10 +39,10 @@ jobs:
               
             - name: Terragrunt Init
               run: |
-                cd environments/dev/
+                cd environments/${{ env.ENVIRONMENT }}/
                 terragrunt init -all -upgrade
 
             - name: Terragrunt Destroy
               run: |
-                cd environments/dev/
+                cd environments/${{ env.ENVIRONMENT }}/
                 terragrunt destroy -all
