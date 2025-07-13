@@ -17,7 +17,7 @@ jobs:
                 working-directory: "./terraform/"
         env:
           AWS_REGION: "eu-west-1"
-          CLUSTER_NAME: "juned-cluster"
+          EKS_CLUSTER_NAME: "juned-cluster"
           ENVIRONMENT: "dev"
     
         steps:
