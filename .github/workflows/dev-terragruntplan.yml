@@ -15,7 +15,10 @@ jobs:
         defaults:
             run:
                 working-directory: "./terraform/"
-        environment: dev
+        env:
+          AWS_REGION: "eu-west-1"
+          CLUSTER_NAME: "juned-cluster"
+          ENVIRONMENT: "dev"
         permissions:
           security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
     
