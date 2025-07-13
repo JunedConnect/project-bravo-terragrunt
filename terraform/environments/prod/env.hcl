@@ -3,7 +3,7 @@
 locals {
   region = "eu-west-2"
 
-  terraform-version = ">= 1.11.0"
+  terraform-or-opentofu-version = ">= 1.10.1"
 
   provider-version = {
     aws        = "5.95.0"

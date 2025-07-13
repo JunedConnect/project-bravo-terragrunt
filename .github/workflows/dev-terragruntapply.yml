@@ -1,4 +1,4 @@
-name: terragrunt apply
+name: Dev Terragrunt Apply
 
 on:
   workflow_dispatch:
@@ -10,12 +10,12 @@ on:
 
 
 jobs:
-    terragruntapply:
+    TerragruntApply:
         runs-on: ubuntu-latest
         defaults:
             run:
                 working-directory: "./terraform/"
-        environment: aws
+        environment: dev
     
         steps:
             - name: Checkout
@@ -26,37 +26,26 @@ jobs:
               with:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ secrets.AWS_REGION }}
+                aws-region: ${{ env.AWS_REGION }}
 
-            # - name: Set up Terraform
-            #   uses: hashicorp/setup-terraform@v3
-            #   with:
-            #     terraform_version: 1.11.1
-
-            # - name: Terraform Init
-            #   run: terraform init
-
-            # - name: Terraform Apply
-            #   run: terraform apply -auto-approve
-
-            - name: install terragrunt
+            - name: Install Terragrunt
               uses: gruntwork-io/terragrunt-action@v3
               with:
                 tg_version: '0.83.0'
-                # tofu_version: '1.10.1'
+                tofu_version: '1.10.1'
               
-            - name: terragrunt init
+            - name: Terragrunt Init
               run: |
-                cd environments/dev/
-                terragrunt init -all
+                cd environments/${{ env.ENVIRONMENT }}/
+                terragrunt init -all -upgrade
 
-            - name: terragrunt apply
+            - name: Terragrunt Apply
               run: |
-                cd environments/dev/
+                cd environments/${{ env.ENVIRONMENT }}/
                 terragrunt apply -all
 
             - name: Update kubeconfig for EKS cluster
-              run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+              run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
             - name: Deploy Cert-Manager issuer.yaml
               run: kubectl apply -f ../cert-man/issuer.yml
