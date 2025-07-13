@@ -1,4 +1,4 @@
-name: Dev Terragrunt Apply
+name: Dev Terragrunt Destroy
 
 on:
   workflow_dispatch:
@@ -10,14 +10,13 @@ on:
 
 
 jobs:
-    TerragruntApply:
-        runs-on: ubuntu-latest
+    TerragruntDestroy:
+        runs-on: ubuntu-24.04
         defaults:
             run:
                 working-directory: "./terraform/"
         env:
           AWS_REGION: "eu-west-1"
-          EKS_CLUSTER_NAME: "juned-cluster"
           ENVIRONMENT: "dev"
     
         steps:
@@ -29,7 +28,7 @@ jobs:
               with:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ env.AWS_REGION }}
+                aws-region: ${{ secrets.AWS_REGION }}
 
             - name: Install Terragrunt
               uses: gruntwork-io/terragrunt-action@v3
@@ -42,16 +41,7 @@ jobs:
                 cd environments/${{ env.ENVIRONMENT }}/
                 terragrunt init -all -upgrade
 
-            - name: Terragrunt Apply
+            - name: Terragrunt Destroy
               run: |
                 cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt apply -all --non-interactive
-
-            - name: Update kubeconfig for EKS cluster
-              run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-
-            - name: Deploy Cert-Manager issuer.yaml
-              run: kubectl apply -f ../cert-man/issuer.yml
-
-            - name: Deploy ArgoCD App Deployment apps-argocd.yaml
-              run: kubectl apply -f ../argocd/argocd-git.yml
+                terragrunt destroy -all --non-interactive
