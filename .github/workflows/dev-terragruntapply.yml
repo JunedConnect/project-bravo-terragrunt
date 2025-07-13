@@ -45,7 +45,7 @@ jobs:
             - name: Terragrunt Apply
               run: |
                 cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt apply -all
+                terragrunt apply -all --non-interactive
 
             - name: Update kubeconfig for EKS cluster
               run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}

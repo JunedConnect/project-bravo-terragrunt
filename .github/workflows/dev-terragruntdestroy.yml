@@ -45,4 +45,4 @@ jobs:
             - name: Terragrunt Destroy
               run: |
                 cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt destroy -all
+                terragrunt destroy -all --non-interactive
