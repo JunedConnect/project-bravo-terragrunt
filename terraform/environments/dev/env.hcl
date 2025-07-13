@@ -4,7 +4,8 @@ locals {
   region = "eu-west-1"
 
   # terraform-version = ">= 1.11.0"
-  terraform-version = "= 1.12.2"
+
+  terraform-version = "= 1.10.1"
 
   provider-version = {
     aws        = "5.95.0"
