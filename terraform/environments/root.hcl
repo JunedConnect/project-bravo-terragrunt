@@ -2,7 +2,7 @@ locals {
   environment-variables = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
   region             = local.environment-variables.locals.region
-  terraform-version  = local.environment-variables.locals.terraform-version
+  terraform-or-opentofu-version  = local.environment-variables.locals.terraform-or-opentofu-version
   provider-version   = local.environment-variables.locals.provider-version
   default-tags       = local.environment-variables.locals.default-tags
 }
@@ -12,7 +12,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 terraform {
-  required_version = "${local.terraform-version}"
+  required_version = "${local.terraform-or-opentofu-version}"
 
   required_providers {
     aws = {
