@@ -71,7 +71,7 @@ jobs:
               uses: gruntwork-io/terragrunt-action@v3
               with:
                 tg_version: '0.83.0'
-                # tofu_version: '1.10.1'
+                tofu_version: '1.6.0'
 
             - name: terragrunt init
               run: |
