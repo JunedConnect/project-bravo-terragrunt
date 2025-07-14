@@ -65,7 +65,7 @@ This setup uses:
 │   └── argocd-git.yml
 ├── cert-man
 │   └── issuer.yml
-└── terraform
+├── terraform
 │   ├── environments
 │   │   ├── dev
 │   │   │   ├── dev.tfvars
