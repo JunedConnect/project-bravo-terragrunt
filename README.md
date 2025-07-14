@@ -114,11 +114,11 @@ This setup uses:
     - **Helm values** for Argo CD, Cert Manager, External DNS, Prometheus & Grafana.
 
 - **Terraform Modules** (`terraform/modules`):
-    - **modules/eks**: Creates the EKS cluster and node groups.
-    - **modules/helm**: Installs core Kubernetes tools via Helm.
-    - **modules/irsa**: Sets up IRSA for Kubernetes resources to access to AWS services.
-    - **modules/route53**: Manages DNS hosted zone.
-    - **modules/vpc**: Provisions the full VPC setup.
+    - **eks**: Creates the EKS cluster and node groups.
+    - **helm**: Installs core Kubernetes tools via Helm.
+    - **irsa**: Sets up IRSA for Kubernetes resources to access to AWS services.
+    - **route53**: Manages DNS hosted zone.
+    - **vpc**: Provisions the full VPC setup.
 
 - **CI/CD Pipelines** (`.github/workflows/`): See below
 
