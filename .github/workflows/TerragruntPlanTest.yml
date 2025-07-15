@@ -3,6 +3,9 @@ name: Terragrunt Plan Test
 on:
   workflow_dispatch:
 
+permissions:
+  security-events: write
+
 jobs:
   TerragruntPlan:
     uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
