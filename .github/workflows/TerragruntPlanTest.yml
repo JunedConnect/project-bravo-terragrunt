@@ -5,7 +5,7 @@ on:
 
 jobs:
   TerragruntPlan:
-    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@reusable-workflows
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
     with:
       aws-region: "eu-west-2"
       environment: "dev"
