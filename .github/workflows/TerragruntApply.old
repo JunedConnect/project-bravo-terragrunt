@@ -1,0 +1,59 @@
+# this was incorporated into the reusable workflow
+
+name: Terragrunt Apply
+
+on:
+  workflow_dispatch:
+
+# on:
+#     push:
+#         branches:
+#             - dev
+
+
+jobs:
+    TerragruntApply:
+        runs-on: ubuntu-24.04
+        defaults:
+            run:
+                working-directory: "./terraform/"
+        env:
+          AWS_REGION: "eu-west-2"
+          EKS_CLUSTER_NAME: "juned-cluster"
+          ENVIRONMENT: "prod"
+    
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Login to AWS
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: ${{ env.AWS_REGION }}
+
+            - name: Install Terragrunt
+              uses: gruntwork-io/terragrunt-action@v3
+              with:
+                tg_version: '0.83.0'
+                tofu_version: '1.10.1'
+              
+            - name: Terragrunt Init
+              run: |
+                cd environments/${{ env.ENVIRONMENT }}/
+                terragrunt init -all -upgrade
+
+            - name: Terragrunt Apply
+              run: |
+                cd environments/${{ env.ENVIRONMENT }}/
+                terragrunt apply -all --non-interactive
+
+            - name: Update kubeconfig for EKS cluster
+              run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+            - name: Deploy Cert-Manager issuer.yaml
+              run: kubectl apply -f ../cert-man/issuer.yml
+
+            - name: Deploy ArgoCD App Deployment apps-argocd.yaml
+              run: kubectl apply -f ../argocd/argocd-git.yml

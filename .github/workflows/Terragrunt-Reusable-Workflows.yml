@@ -9,11 +9,11 @@ on:
       environment:
         required: true
         type: string
-      action:
-        required: true
-        type: string
       eks-cluster-name:
         required: false
+        type: string
+      action:
+        required: true
         type: string
     secrets:
       aws-access-key:
