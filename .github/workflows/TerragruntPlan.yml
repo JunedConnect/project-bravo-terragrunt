@@ -2,74 +2,35 @@ name: Terragrunt Plan
 
 on:
   workflow_dispatch:
-
-# on:
-#     push:
-#         branches:
-#             - dev
+        inputs:
+            cicdenvironment:
+                description: 'Choose environment'
+                required: true
+                type: choice
+                options:
+                    - dev
+                    - prod
 
 
 jobs:
-    TerragruntPlan:
-        runs-on: ubuntu-24.04
-        defaults:
-            run:
-                working-directory: "./terraform/"
-        env:
-          AWS_REGION: "eu-west-2"
-          ENVIRONMENT: "prod"
-        permissions:
-          security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-    
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  Terragrunt-Plan-Dev:
+    if: ${{ github.event.inputs.cicdenvironment == 'dev' }}
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
+    with:
+      aws-region: "eu-west-1"
+      environment: "dev"
+      action: "plan"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-            - name: Login to AWS
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ env.AWS_REGION }}
-  
-            - name: Setup Tflint
-              uses: terraform-linters/setup-tflint@master
-              with: 
-                tflint_version: latest
-  
-            - name: TFlint Scan   #See this link for command flags https://github.com/terraform-linters/tflint and https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/config.md#format
-              run: |
-                touch tflint-results-terraform.sarif
-                tflint --recursive --color
-              continue-on-error: true
-        
-            - name: Checkov
-              uses: bridgecrewio/checkov-action@master
-              with:
-                framework: terraform
-                soft_fail: true   #Soft fail true means that the pipeline will stil continue to run regardless if a vulnerability was detected. Soft fail false would be the opposite where a detected vulnerability will cause the pipeline to stop running
-                output_format: cli,sarif
-                output_file_path: checkov-results-terraform.sarif
-                
-            - name: Upload Checkov scan results to GitHub Security tab
-              uses: github/codeql-action/upload-sarif@v3
-              if: success() || failure()
-              with:
-                  sarif_file: 'checkov-results-terraform.sarif'
-                  wait-for-processing: true
-
-            - name: Install terragrunt
-              uses: gruntwork-io/terragrunt-action@v3
-              with:
-                tg_version: '0.83.0'
-                tofu_version: '1.10.1'
-
-            - name: Terragrunt Init
-              run: |
-                cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt init -all -upgrade
-
-            - name: Terragrunt Plan
-              run: |
-                cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt plan -all
+  Terragrunt-Plan-Prod:
+    if: ${{ github.event.inputs.cicdenvironment == 'prod' }}
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
+    with:
+      aws-region: "eu-west-2"
+      environment: "prod"
+      action: "plan"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

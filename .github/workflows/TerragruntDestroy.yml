@@ -2,46 +2,35 @@ name: Terragrunt Destroy
 
 on:
   workflow_dispatch:
-
-# on:
-#     push:
-#         branches:
-#             - dev
+        inputs:
+            cicdenvironment:
+                description: 'Choose environment'
+                required: true
+                type: choice
+                options:
+                    - dev
+                    - prod
 
 
 jobs:
-    TerragruntDestroy:
-        runs-on: ubuntu-24.04
-        defaults:
-            run:
-                working-directory: "./terraform/"
-        env:
-          AWS_REGION: "eu-west-2"
-          ENVIRONMENT: "prod"
-    
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  Terragrunt-Destroy-Dev:
+    if: ${{ github.event.inputs.cicdenvironment == 'dev' }}
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
+    with:
+      aws-region: "eu-west-1"
+      environment: "dev"
+      action: "destroy"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-            - name: Login to AWS
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ secrets.AWS_REGION }}
-
-            - name: Install Terragrunt
-              uses: gruntwork-io/terragrunt-action@v3
-              with:
-                tg_version: '0.83.0'
-                tofu_version: '1.10.1'
-              
-            - name: Terragrunt Init
-              run: |
-                cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt init -all -upgrade
-
-            - name: Terragrunt Destroy
-              run: |
-                cd environments/${{ env.ENVIRONMENT }}/
-                terragrunt destroy -all --non-interactive
+  Terragrunt-Destroy-Prod:
+    if: ${{ github.event.inputs.cicdenvironment == 'prod' }}
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
+    with:
+      aws-region: "eu-west-2"
+      environment: "prod"
+      action: "destroy"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
