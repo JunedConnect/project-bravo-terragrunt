@@ -15,7 +15,7 @@ on:
 jobs:
   Terragrunt-Apply-Dev:
     if: ${{ github.event.inputs.cicdenvironment == 'dev' }}
-    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@reusable-workflows
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
     with:
       aws-region: "eu-west-1"
       environment: "dev"
@@ -27,7 +27,7 @@ jobs:
 
   Terragrunt-Apply-Prod:
     if: ${{ github.event.inputs.cicdenvironment == 'prod' }}
-    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@reusable-workflows
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@main
     with:
       aws-region: "eu-west-2"
       environment: "prod"

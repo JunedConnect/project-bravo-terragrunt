@@ -23,7 +23,7 @@ on:
 
 
 jobs:
-    TerragruntPlan-Reusable:
+    Terragrunt-Plan-Reusable-Workflow:
         if: ${{ inputs.action == 'plan' }}
         runs-on: ubuntu-24.04
         defaults:
@@ -85,7 +85,7 @@ jobs:
                 cd environments/${{ inputs.environment }}/
                 terragrunt plan -all
 
-    TerragruntApply-Reusable:
+    Terragrunt-Apply-Reusable-Workflow:
         if: ${{ inputs.action == 'apply' }}
         runs-on: ubuntu-24.04
         defaults:
@@ -129,7 +129,7 @@ jobs:
               run: kubectl apply -f ../argocd/argocd-git.yml
 
 
-    TerragruntDestroy-Reusable:
+    Terragrunt-Destroy-Reusable-Workflow:
         if: ${{ inputs.action == 'destroy' }}
         runs-on: ubuntu-24.04
         defaults:
