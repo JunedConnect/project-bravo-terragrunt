@@ -1,4 +1,4 @@
-name: Terragrunt Plan Reusable
+name: Terragrunt Reusable Workflows
 
 on:
   workflow_call:
@@ -9,6 +9,12 @@ on:
       environment:
         required: true
         type: string
+      action:
+        required: true
+        type: string
+      eks-cluster-name:
+        required: false
+        type: string
     secrets:
       aws-access-key:
         required: true
@@ -17,7 +23,8 @@ on:
 
 
 jobs:
-    TerragruntPlan:
+    TerragruntPlan-Reusable:
+        if: ${{ inputs.action == 'plan' }}
         runs-on: ubuntu-24.04
         defaults:
             run:
@@ -77,3 +84,81 @@ jobs:
               run: |
                 cd environments/${{ inputs.environment }}/
                 terragrunt plan -all
+
+    TerragruntApply-Reusable:
+        if: ${{ inputs.action == 'apply' }}
+        runs-on: ubuntu-24.04
+        defaults:
+            run:
+                working-directory: "./terraform/"
+    
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Login to AWS
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-access-key-id: ${{ secrets.aws-access-key }}
+                aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+                aws-region: ${{ inputs.aws-region }}
+
+            - name: Install Terragrunt
+              uses: gruntwork-io/terragrunt-action@v3
+              with:
+                tg_version: '0.83.0'
+                tofu_version: '1.10.1'
+              
+            - name: Terragrunt Init
+              run: |
+                cd environments/${{ inputs.environment }}/
+                terragrunt init -all -upgrade
+
+            - name: Terragrunt Apply
+              run: |
+                cd environments/${{ inputs.environment }}/
+                terragrunt apply -all --non-interactive
+
+            - name: Update kubeconfig for EKS cluster
+              run: aws eks update-kubeconfig --name ${{ inputs.eks-cluster-name }} --region ${{ inputs.aws-region }}
+
+            - name: Deploy Cert-Manager issuer.yaml
+              run: kubectl apply -f ../cert-man/issuer.yml
+
+            - name: Deploy ArgoCD App Deployment apps-argocd.yaml
+              run: kubectl apply -f ../argocd/argocd-git.yml
+
+
+    TerragruntDestroy-Reusable:
+        if: ${{ inputs.action == 'destroy' }}
+        runs-on: ubuntu-24.04
+        defaults:
+            run:
+                working-directory: "./terraform/"
+    
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Login to AWS
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-access-key-id: ${{ secrets.aws-access-key }}
+                aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+                aws-region: ${{ inputs.aws-region }}
+
+            - name: Install Terragrunt
+              uses: gruntwork-io/terragrunt-action@v3
+              with:
+                tg_version: '0.83.0'
+                tofu_version: '1.10.1'
+              
+            - name: Terragrunt Init
+              run: |
+                cd environments/${{ inputs.environment }}/
+                terragrunt init -all -upgrade
+
+            - name: Terragrunt Destroy
+              run: |
+                cd environments/${{ inputs.environment }}/
+                terragrunt destroy -all --non-interactive

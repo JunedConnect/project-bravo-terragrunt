@@ -19,6 +19,7 @@ jobs:
     with:
       aws-region: "eu-west-1"
       environment: "dev"
+      action: "plan"
     secrets:
       aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -29,6 +30,7 @@ jobs:
     with:
       aws-region: "eu-west-2"
       environment: "prod"
+      action: "plan"
     secrets:
       aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
