@@ -45,7 +45,7 @@ This setup uses:
         - **Helm Charts** to deploy Argo CD, NGINX Ingress, Cert Manager, External DNS, Prometheus & Grafana.
 
 - **CI/CD Pipeline**: GitHub Actions automate:
-    - Building and pushing the Docker image to **Amazon ECR.
+    - Building and pushing the Docker image to Amazon ECR.
     - Performing security and compliance scans to ensure code quality and security.
     - Applying Terraform to deploy AWS infrastructure.
     - Deploying Kubernetes manifests and Helm charts.
