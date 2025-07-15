@@ -1,12 +1,19 @@
-name: Terragrunt Plan
+name: Terragrunt Plan Reusable
 
 on:
-  workflow_dispatch:
-
-# on:
-#     push:
-#         branches:
-#             - dev
+  workflow_call:
+    inputs:
+      aws-region:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      aws-access-key:
+        required: true
+      aws-secret-access-key:
+        required: true
 
 
 jobs:
@@ -15,9 +22,6 @@ jobs:
         defaults:
             run:
                 working-directory: "./terraform/"
-        env:
-          AWS_REGION: "eu-west-2"
-          ENVIRONMENT: "prod"
         permissions:
           security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
     
@@ -28,9 +32,9 @@ jobs:
             - name: Login to AWS
               uses: aws-actions/configure-aws-credentials@v4
               with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ env.AWS_REGION }}
+                aws-access-key-id: ${{ secrets.aws-access-key }}
+                aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+                aws-region: ${{ inputs.aws-region }}
   
             - name: Setup Tflint
               uses: terraform-linters/setup-tflint@master
@@ -66,10 +70,10 @@ jobs:
 
             - name: Terragrunt Init
               run: |
-                cd environments/${{ env.ENVIRONMENT }}/
+                cd environments/${{ inputs.environment }}/
                 terragrunt init -all -upgrade
 
             - name: Terragrunt Plan
               run: |
-                cd environments/${{ env.ENVIRONMENT }}/
+                cd environments/${{ inputs.environment }}/
                 terragrunt plan -all

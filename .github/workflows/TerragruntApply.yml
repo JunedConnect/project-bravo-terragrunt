@@ -1,4 +1,4 @@
-name: Dev Terragrunt Apply
+name: Terragrunt Apply
 
 on:
   workflow_dispatch:
@@ -16,9 +16,9 @@ jobs:
             run:
                 working-directory: "./terraform/"
         env:
-          AWS_REGION: "eu-west-1"
+          AWS_REGION: "eu-west-2"
           EKS_CLUSTER_NAME: "juned-cluster"
-          ENVIRONMENT: "dev"
+          ENVIRONMENT: "prod"
     
         steps:
             - name: Checkout

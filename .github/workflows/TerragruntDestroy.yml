@@ -1,4 +1,4 @@
-name: Dev Terragrunt Destroy
+name: Terragrunt Destroy
 
 on:
   workflow_dispatch:
@@ -16,8 +16,8 @@ jobs:
             run:
                 working-directory: "./terraform/"
         env:
-          AWS_REGION: "eu-west-1"
-          ENVIRONMENT: "dev"
+          AWS_REGION: "eu-west-2"
+          ENVIRONMENT: "prod"
     
         steps:
             - name: Checkout

@@ -7,7 +7,6 @@ terraform {
             "plan",
             "apply",
             "destroy",
-            "output",
     ]
         required_var_files = [find_in_parent_folders("dev.tfvars")]
     }
