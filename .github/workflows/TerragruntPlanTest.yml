@@ -5,10 +5,10 @@ on:
 
 jobs:
   TerragruntPlan:
-    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@reusable-workflows
     with:
       aws-region: "eu-west-2"
       environment: "dev"
     secrets:
-      aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
