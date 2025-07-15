@@ -2,13 +2,33 @@ name: Terragrunt Plan Test
 
 on:
   workflow_dispatch:
+        inputs:
+            cicdenvironment:
+                description: 'Choose environment'
+                required: true
+                type: choice
+                options:
+                    - dev
+                    - prod
+
 
 jobs:
-  TerragruntPlan:
+  TerragruntPlanDev:
+    if: ${{ github.event.inputs.cicdenvironment == 'dev' }}
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
+    with:
+      aws-region: "eu-west-1"
+      environment: "dev"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  TerragruntPlanProd:
+    if: ${{ github.event.inputs.cicdenvironment == 'prod' }}
     uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
     with:
       aws-region: "eu-west-2"
-      environment: "dev"
+      environment: "prod"
     secrets:
       aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
