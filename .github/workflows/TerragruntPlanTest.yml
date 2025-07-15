@@ -26,7 +26,7 @@ jobs:
 
   TerragruntPlanProd:
     if: ${{ github.event.inputs.cicdenvironment == 'prod' }}
-    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflow.yml@reusable-workflows
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/Terragrunt-Reusable-Workflows.yml@reusable-workflows
     with:
       aws-region: "eu-west-2"
       environment: "prod"
