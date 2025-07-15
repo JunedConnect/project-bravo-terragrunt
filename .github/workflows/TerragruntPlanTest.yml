@@ -1,0 +1,14 @@
+name: Terragrunt Plan Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  TerragruntPlan:
+    uses: junedconnect/project-bravo-terragrunt/.github/workflows/TerragruntPlanReusable.yml@main
+    with:
+      aws-region: "eu-west-2"
+      environment: "dev"
+    secrets:
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
